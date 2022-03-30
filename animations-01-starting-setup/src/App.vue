@@ -1,12 +1,11 @@
 <template>
   <div class="container">
-    <div class="block" :class="{ animate: animatedBlock }"></div>
+    <div class="block" :class="{animate: animatedBlock}"></div>
     <button @click="animateBlock">Animate</button>
   </div>
-
   <div class="container">
     <transition
-      name="para"
+      :css="false"
       @before-enter="beforeEnter"
       @enter="enter"
       @after-enter="afterEnter"
@@ -20,23 +19,20 @@
     </transition>
     <button @click="toggleParagraph">Toggle Paragraph</button>
   </div>
-
   <div class="container">
     <transition name="fade-button" mode="out-in">
       <button @click="showUsers" v-if="!usersAreVisible">Show Users</button>
       <button @click="hideUsers" v-else>Hide Users</button>
     </transition>
   </div>
-
   <base-modal @close="hideDialog" :open="dialogIsVisible">
     <p>This is a test dialog!</p>
     <button @click="hideDialog">Close it!</button>
   </base-modal>
-
   <div class="container">
     <button @click="showDialog">Show Dialog</button>
   </div>
-</template>
+</template>  
 
 <script>
 export default {
@@ -47,7 +43,7 @@ export default {
       paraIsVisible: false,
       usersAreVisible: false,
       enterInterval: null,
-      leaveINterval: null,
+      leaveInterval: null
     };
   },
   methods: {
@@ -62,15 +58,16 @@ export default {
     beforeEnter(el) {
       console.log('beforeEnter');
       console.log(el);
+      el.style.opacity = 0;
     },
     enter(el, done) {
       console.log('enter');
       console.log(el);
       let round = 1;
       this.enterInterval = setInterval(() => {
-        el.style.opacity = round * 0.1;
+        el.style.opacity = round * 0.01;
         round++;
-        if (round > 10) {
+        if (round > 100) {
           clearInterval(this.enterInterval);
           done();
         }
@@ -80,17 +77,19 @@ export default {
       console.log('afterEnter');
       console.log(el);
     },
-    beforeLeave() {
+    beforeLeave(el) {
       console.log('beforeLeave');
+      console.log(el);
+      el.style.opacity = 1;
     },
     leave(el, done) {
       console.log('leave');
       console.log(el);
       let round = 1;
       this.leaveInterval = setInterval(() => {
-        el.style.opacity = 1 - round * 0.1;
+        el.style.opacity = 1 - round * 0.01;
         round++;
-        if (round > 10) {
+        if (round > 100) {
           clearInterval(this.leaveInterval);
           done();
         }
@@ -151,7 +150,7 @@ button:active {
   height: 8rem;
   background-color: #290033;
   margin-bottom: 2rem;
-  /* transition: transform 0.3s; */
+  /* transition: transform 0.3s ease-out; */
 }
 .container {
   max-width: 40rem;
@@ -165,7 +164,7 @@ button:active {
   border-radius: 12px;
 }
 .animate {
-  /* transform: translateX(-50px); */
+  /* transform: translateX(-150px); */
   animation: slide-fade 0.3s ease-out forwards;
 }
 
@@ -175,11 +174,11 @@ button:active {
 }
 
 .fade-button-enter-active {
-  transition: opacity 2 ease-out;
+  transition: opacity 0.3s ease-out;
 }
 
 .fade-button-leave-active {
-  transition: opacity 0.3 ease-in;
+  transition: opacity 0.3s ease-in;
 }
 
 .fade-button-enter-to,
@@ -187,13 +186,9 @@ button:active {
   opacity: 1;
 }
 
-.fade-button-leave-active {
-  transition: opacity 0.3s ease-in;
-}
-
 @keyframes slide-scale {
   0% {
-    transform: translateX(0);
+    transform: translateX(0) scale(1);
   }
 
   70% {

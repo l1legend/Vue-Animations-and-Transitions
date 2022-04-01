@@ -1,5 +1,10 @@
 <template>
-<div class="container">
+<router-view v-slot="slotProps">
+  <transition name="fade-button" mode="out-in">
+    <component :is="slotProps.Component"></component>
+  </transition>
+</router-view>
+<!-- <div class="container">
   <users-list></users-list>
 </div>
 
@@ -35,14 +40,14 @@
   </base-modal>
   <div class="container">
     <button @click="showDialog">Show Dialog</button>
-  </div>
+  </div> -->
 </template>  
 
 <script>
-import UsersList from './components/UsersList.vue';
+// import UsersList from './components/UsersList.vue';
 export default {
   components: {
-    UsersList
+    // UsersList
   },
   data() {
     return {
